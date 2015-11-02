@@ -15,6 +15,7 @@
 - (void)awakeFromNib {
     // Initialization code
     self.nameLabel.preferredMaxLayoutWidth = self.nameLabel.frame.size.width;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

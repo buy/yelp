@@ -5,9 +5,9 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MainViewController">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FiltersViewController">
             <connections>
-                <outlet property="mainTableView" destination="ibz-aB-Gbs" id="A3k-Tr-obR"/>
+                <outlet property="filtersTableView" destination="Isw-Mz-ljX" id="CIx-EH-aFH"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -16,18 +16,19 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ibz-aB-Gbs">
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Isw-Mz-ljX">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="ibz-aB-Gbs" secondAttribute="trailing" id="Po2-BH-5yd"/>
-                <constraint firstItem="ibz-aB-Gbs" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Qs9-nf-fon"/>
-                <constraint firstItem="ibz-aB-Gbs" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="SwG-cB-hMV"/>
-                <constraint firstAttribute="bottom" secondItem="ibz-aB-Gbs" secondAttribute="bottom" id="iwo-9j-epu"/>
+                <constraint firstItem="Isw-Mz-ljX" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="HO4-fv-Cqo"/>
+                <constraint firstItem="Isw-Mz-ljX" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="JPJ-T6-EAG"/>
+                <constraint firstAttribute="bottom" secondItem="Isw-Mz-ljX" secondAttribute="bottom" id="S0o-JD-5IM"/>
+                <constraint firstAttribute="trailing" secondItem="Isw-Mz-ljX" secondAttribute="trailing" id="dle-2J-RDi"/>
             </constraints>
+            <point key="canvasLocation" x="483" y="491"/>
         </view>
     </objects>
 </document>
