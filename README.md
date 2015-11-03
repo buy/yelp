@@ -29,7 +29,7 @@ Time spent: 6 hours
 - [x] Filter page settings will be stored during the app session, but will be cleared after app restart
 
 ### Video Walkthrough
-![Video Walkthrough](TBD)
+![Video Walkthrough](https://github.com/buy/ios_yelp/blob/master/Demo/yelp_demo.gif?raw=true)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/)
 
