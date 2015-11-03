@@ -13,15 +13,16 @@
 #import "FiltersViewController.h"
 
 #import "MBProgressHUD.h"
+#import "SVPullToRefresh.h"
+#import "JTFadingInfoView.h"
 
 BusinessSearchSettings *searchSettings;
 
 @interface MainViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, FiltersViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
-@property (strong, nonatomic) NSArray *businesses;
+@property (strong, nonatomic) NSMutableArray *businesses;
 @property (strong, nonatomic) UISearchBar *searchBar;
-//@property (strong, nonatomic) BusinessSearchSettings *searchSettings;
 
 @end
 
@@ -33,6 +34,7 @@ BusinessSearchSettings *searchSettings;
     [self initializeTableView];
     [self initializeAppearance];
     [self initializeSearchBar];
+    [self initializeInfiniteScroll];
 
     [self doSearch];
 }
@@ -42,30 +44,55 @@ BusinessSearchSettings *searchSettings;
 }
 
 - (void) doSearch {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [self doSearch:0];
+}
+
+
+- (void) doSearch:(NSInteger)offset {
+    self.searchBar.text = searchSettings.term;
+    if (!offset) {
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+
     [YelpBusiness searchWithTerm:searchSettings.term
                         sortMode:searchSettings.sortMode
                       categories:searchSettings.categories
                            deals:searchSettings.hasDeal
                           radius:searchSettings.radius
+                          offset:offset
                       completion:^(NSArray *businesses, NSError *error) {
                           if (!error) {
                               for (YelpBusiness *business in businesses) {
                                   NSLog(@"%@", business);
                               }
-                              self.businesses = businesses;
-                              self.searchBar.text = searchSettings.term;
 
+                              if (offset) {
+                                  [self.businesses addObjectsFromArray:businesses];
+                              }
+                              else {
+                                  self.businesses = [NSMutableArray arrayWithArray:businesses];
+                              }
+ 
                               [self.mainTableView reloadData];
                           } else {
                               NSLog(@"An error occurred: %@", error.description);
                               [self alertNetworkError];
                           }
 
-                          [MBProgressHUD hideHUDForView:self.view animated:YES];
-                      }];
+                          if (offset) {
+                              [self.mainTableView.infiniteScrollingView stopAnimating];
+                          }
+                          else {
+                              [MBProgressHUD hideHUDForView:self.view animated:YES];
+                          }
 
+                          if (!businesses.count) {
+                              [self noMoreBusinessNotification];
+                          }
+                      }];
 }
+
+#pragma mark - Search bar methods
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
     [self.searchBar setShowsCancelButton:YES animated:YES];
@@ -93,6 +120,8 @@ BusinessSearchSettings *searchSettings;
     return UIStatusBarStyleLightContent;
 }
 
+#pragma mark - View initializers
+
 - (void)initializeTableView {
     self.mainTableView.dataSource = self;
     self.mainTableView.delegate = self;
@@ -119,6 +148,14 @@ BusinessSearchSettings *searchSettings;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(onFilterButton)];
 }
 
+- (void)initializeInfiniteScroll {
+    [self.mainTableView addInfiniteScrollingWithActionHandler:^{
+        [self doSearch:self.businesses.count];
+    }];
+}
+
+#pragma mark - Error handlers
+
 - (void)alertNetworkError {
     UIAlertController *myAlertController = [UIAlertController alertControllerWithTitle:@"Error"
                                                                                message:@"Network error, please check your network connection."
@@ -135,7 +172,17 @@ BusinessSearchSettings *searchSettings;
     [self presentViewController:myAlertController animated:YES completion:nil];
 }
 
+- (void)noMoreBusinessNotification {
+    CGRect frame = CGRectMake(150, 200, 250, 50);
+    NSString *label = @"Oops, no more business.";
+    JTFadingInfoView *infoView = [[JTFadingInfoView alloc] initWithFrame:frame
+                                                                   label:label];
+    infoView.center = self.mainTableView.center;
+    [self.view addSubview:infoView];
+}
+
 #pragma mark - Table view methods
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.businesses.count;
 }
@@ -150,6 +197,11 @@ BusinessSearchSettings *searchSettings;
     cell.business = business;
     
     return cell;
+}
+
+- (void) tableView: (UITableView *) tableView didSelectRowAtIndexPath: (NSIndexPath *) indexPath {
+    YelpBusiness *business = self.businesses[indexPath.row];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: business.url]];
 }
 
 #pragma mark - Filter delegate methods

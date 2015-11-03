@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *reviewLabel;
 @property (weak, nonatomic) IBOutlet UILabel *addressLabel;
 @property (weak, nonatomic) IBOutlet UILabel *categoriesLabel;
+@property (weak, nonatomic) IBOutlet UILabel *dealLabel;
 
 @property (strong, nonatomic) YelpBusiness *business;
 

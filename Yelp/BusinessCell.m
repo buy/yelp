@@ -34,6 +34,7 @@
     self.reviewLabel.text = [NSString stringWithFormat:@"%@ Reviews", self.business.reviewCount];
     self.addressLabel.text = self.business.address;
     self.categoriesLabel.text = self.business.categories;
+    self.dealLabel.hidden = !self.business.deals;
 }
 
 - (void)layoutSubviews {

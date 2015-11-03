@@ -27,6 +27,7 @@ typedef NS_ENUM(NSInteger, YelpSortMode) {
                                 categories:(NSArray *)categories
                                      deals:(BOOL)hasDeal
                                     radius:(NSInteger)radius
+                                    offset:(NSInteger)offset
                                 completion:(void (^)(NSArray *businesses, NSError *error))completion;
 
 @end

@@ -51,6 +51,7 @@ NSString * const kYelpTokenSecret = @"mqtKIxMIR4iBtBPZCmCLEb-Dz3Y";
                      categories:nil
                           deals:NO
                          radius:0
+                         offset:0
                      completion:completion];
 }
 
@@ -59,12 +60,14 @@ NSString * const kYelpTokenSecret = @"mqtKIxMIR4iBtBPZCmCLEb-Dz3Y";
                                 categories:(NSArray *)categories
                                      deals:(BOOL)hasDeal
                                     radius:(NSInteger)radius
+                                    offset:(NSInteger)offset
                                 completion:(void (^)(NSArray *businesses, NSError *error))completion {
     
     // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
     NSMutableDictionary *parameters = [@{@"term": term,
                                          @"ll" : @"37.774866,-122.394556",
-                                         @"sort": [NSNumber numberWithInt:sortMode]}
+                                         @"sort": [NSNumber numberWithInt:sortMode],
+                                         @"offset": [NSNumber numberWithInteger:offset]}
                                        mutableCopy];
     
     if (categories && categories.count > 0) {
@@ -76,11 +79,8 @@ NSString * const kYelpTokenSecret = @"mqtKIxMIR4iBtBPZCmCLEb-Dz3Y";
     }
 
     if (radius) {
-        NSArray *radiusSegment = @[@0, @0.5, @1.0, @5.0, @20.0];
-        float radiusMeter = [radiusSegment[radius] intValue] * 1609.34;
-        if (radiusMeter == 0) {
-            return nil;
-        }
+        NSArray *radiusSegment = @[@0, @0.3, @1.0, @5.0, @20.0];
+        float radiusMeter = [radiusSegment[radius] floatValue] * 1609.34;
         parameters[@"radius_filter"] = [NSNumber numberWithFloat:radiusMeter];
     }
 

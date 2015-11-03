@@ -16,7 +16,6 @@
 
 @property (nonatomic, weak) IBOutlet UITableView *filtersTableView;
 @property (nonatomic, strong) NSArray *categories;
-//@property (nonatomic, strong) NSMutableSet *selectedCategories;
 
 - (void)initCategories;
 

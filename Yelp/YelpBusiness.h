@@ -18,6 +18,8 @@
 @property (strong, nonatomic) NSString *distance;
 @property (strong, nonatomic) NSURL *ratingImageUrl;
 @property (strong, nonatomic) NSNumber *reviewCount;
+@property (strong, nonatomic) NSDictionary *deals;
+@property (strong, nonatomic) NSString *url;
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 
@@ -31,6 +33,7 @@
             categories:(NSArray *)categories
                  deals:(BOOL)hasDeal
                 radius:(NSInteger)radius
+                offset:(NSInteger)offset
             completion:(void (^)(NSArray *businesses, NSError *error))completion;
 
 @end

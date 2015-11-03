@@ -55,6 +55,10 @@
         _ratingImageUrl = ratingImageUrlString ? [NSURL URLWithString:ratingImageUrlString] : nil;
 
         _reviewCount = dict[@"review_count"];
+
+        _deals = dict[@"deals"];
+
+        _url = dict[@"url"];
     }
     return self;
 }
@@ -79,6 +83,7 @@
             categories:(NSArray *)categories
                  deals:(BOOL)hasDeal
                 radius:(NSInteger)radius
+                offset:(NSInteger)offset
             completion:(void (^)(NSArray *businesses, NSError *error))completion {
 
     [[YelpClient sharedInstance] searchWithTerm:term
@@ -86,18 +91,21 @@
                                      categories:categories
                                           deals:hasDeal
                                          radius:radius
+                                         offset:offset
                                      completion:completion];
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"\n\tName:%@\n\tAddress:%@\n\tImageUrl:%@\n\tCategories:%@\n\tDistance:%@\n\tRatingImageUrl:%@\n\tReviewCount:%@\n\t",
+    return [NSString stringWithFormat:@"\n\tName:%@\n\tAddress:%@\n\tImageUrl:%@\n\tCategories:%@\n\tDistance:%@\n\tRatingImageUrl:%@\n\tReviewCount:%@\n\tDeals:%@\n\tURL:%@\n\t",
             self.name,
             self.address,
             self.imageUrl,
             self.categories,
             self.distance,
             self.ratingImageUrl,
-            self.reviewCount];
+            self.reviewCount,
+            self.deals,
+            self.url];
 }
 
 @end
