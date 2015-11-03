@@ -28,7 +28,7 @@ Time spent: 16 hours
 - [x] Network request loader
 - [x] Infinite scroll loader
 - [x] Network error notification
-- [x] No more business notification
+- [x] Notify the user when all the eligible businesses are loaded
 - [x] Filter page settings will be stored during the app session, but will be cleared after app restart
 
 ### Video Walkthrough
