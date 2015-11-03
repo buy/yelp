@@ -2,7 +2,7 @@
 
 This is a Yelp app for iOS as the [week 2 assignment](https://courses.codepath.com/courses/intro_to_ios/unit/2#!assignment) of CodePath.
 
-Time spent: 6 hours
+Time spent: 16 hours
 
 ### Completed:
 
@@ -15,21 +15,24 @@ Time spent: 6 hours
 - [x] Clicking on the "Search" button should dismiss the filters page and trigger the search w/ the new filter settings.
 
 ### Optional:
-- [ ] Infinite scroll for restaurant results
+- [x] Infinite scroll for restaurant results
 - [ ] Implement map view of restaurant results
 - [ ] Implement a custom switch
 - [ ] Distance filter should expand as in the real Yelp app.
 - [ ] Categories should show a subset of the full list with a "See All" row to expand.
-- [ ] Implement the restaurant detail page.
+- [x] Implement the restaurant detail page. (Simply linked to the web version of the yelp business)
 
 ### Additional:
 - [x] Improved UI
+- [x] Deal icon for business that is running deals
 - [x] Network request loader
+- [x] Infinite scroll loader
 - [x] Network error notification
+- [x] No more business notification
 - [x] Filter page settings will be stored during the app session, but will be cleared after app restart
 
 ### Video Walkthrough
-![Video Walkthrough](https://github.com/buy/ios_yelp/blob/master/Demo/yelp_demo.gif?raw=true)
+![Video Walkthrough](https://github.com/buy/yelp/blob/master/Demo/yelp_demo.gif?raw=true)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/)
 
