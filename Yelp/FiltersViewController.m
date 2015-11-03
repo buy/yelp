@@ -8,13 +8,15 @@
 
 #import "FiltersViewController.h"
 #import "SwitchCell.h"
+#import "SortByCell.h"
+#import "DistanceCell.h"
+#import "MainViewController.h"
 
-@interface FiltersViewController () <UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate>
+@interface FiltersViewController () <UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate, SortByCellDelegate, DistanceCellDelegate>
 
 @property (nonatomic, weak) IBOutlet UITableView *filtersTableView;
-@property (nonatomic, readonly) NSDictionary *filters;
 @property (nonatomic, strong) NSArray *categories;
-@property (nonatomic, strong) NSMutableSet *selectedCategories;
+//@property (nonatomic, strong) NSMutableSet *selectedCategories;
 
 - (void)initCategories;
 
@@ -26,7 +28,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
 
     if (self) {
-        self.selectedCategories = [NSMutableSet set];
         [self initCategories];
     }
 
@@ -36,14 +37,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.navigationController.navigationBar.barStyle = UIStatusBarStyleLightContent;
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(onCancelButton)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Apply" style:UIBarButtonItemStylePlain target:self action:@selector(onApplyButton)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Search" style:UIBarButtonItemStylePlain target:self action:@selector(onApplyButton)];
 
     self.filtersTableView.dataSource = self;
     self.filtersTableView.delegate = self;
 
     [self.filtersTableView registerNib:[UINib nibWithNibName:@"SwitchCell" bundle:nil] forCellReuseIdentifier:@"SwitchCell"];
+    [self.filtersTableView registerNib:[UINib nibWithNibName:@"SortByCell" bundle:nil] forCellReuseIdentifier:@"SortByCell"];
+    [self.filtersTableView registerNib:[UINib nibWithNibName:@"DistanceCell" bundle:nil] forCellReuseIdentifier:@"DistanceCell"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -53,30 +57,118 @@
 
 #pragma mark - Table view methods
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.categories.count;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    SwitchCell *cell = [self.filtersTableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
+    NSInteger sectionNumber = [indexPath section];
 
-    cell.filterLabel.text = self.categories[indexPath.row][@"name"];
-    cell.filterSwitch.on = [self.selectedCategories containsObject:self.categories[indexPath.row]];
-    cell.delegate = self;
+    if (sectionNumber == 0) {
+        SwitchCell *cell = [self.filtersTableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
+        cell.delegate = self;
+        cell.filterLabel.text = @"Offering a Deal";
+        cell.filterSwitch.on = searchSettings.hasDeal;
 
-    return cell;
+        return cell;
+    }
+    else if (sectionNumber == 1) {
+        DistanceCell *cell = [self.filtersTableView dequeueReusableCellWithIdentifier:@"DistanceCell"];
+        cell.delegate = self;
+        cell.distanceSegment.selectedSegmentIndex = searchSettings.radius;
+
+        return cell;
+    }
+    else if (sectionNumber == 2) {
+        SortByCell *cell = [self.filtersTableView dequeueReusableCellWithIdentifier:@"SortByCell"];
+        cell.delegate = self;
+        cell.sortBySegment.selectedSegmentIndex = searchSettings.sortMode;
+
+        return cell;
+    }
+    else {
+        SwitchCell *cell = [self.filtersTableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
+        cell.delegate = self;
+        cell.filterLabel.text = self.categories[indexPath.row][@"name"];
+        cell.filterSwitch.on = [searchSettings.categories containsObject:self.categories[indexPath.row][@"code"]];
+        cell.preservesSuperviewLayoutMargins = false;
+        cell.separatorInset = UIEdgeInsetsZero;
+        cell.layoutMargins = UIEdgeInsetsZero;
+        
+        return cell;
+    }
 }
 
-#pragma mark - Switch cell delegate methods
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return @"Deal";
+    }
+    else if (section == 1) {
+        return @"Distance";
+    }
+    else if (section == 2) {
+        return @"Sort By";
+    }
+    else {
+        return @"Category";
+    }
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 4;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    switch(section){
+        case 0:
+            return 1;
+            break;
+        case 1:
+            return 1;
+            break;
+        case 2:
+            return 1;
+        case 3:
+            return self.categories.count;
+    }
+
+    return 0;
+}
+
+#pragma mark - FiltersView cells delegate methods
 
 - (void)switchCell:(SwitchCell *)cell didUpdateValue:(BOOL)value {
     NSIndexPath *indexPath = [self.filtersTableView indexPathForCell:cell];
-
-    if (value) {
-        [self.selectedCategories addObject:self.categories[indexPath.row]];
+    
+    switch([indexPath section]) {
+        case 0:
+            searchSettings.hasDeal = value;
+            break;
+        case 3:
+            if (value) {
+                [searchSettings.categories addObject:self.categories[indexPath.row][@"code"]];
+            }
+            else {
+                [searchSettings.categories removeObject:self.categories[indexPath.row][@"code"]];
+            }
+            break;
     }
-    else {
-        [self.selectedCategories removeObject:self.categories[indexPath.row]];
+}
+
+- (void)distanceCell:(DistanceCell *)cell didUpdateSegment:(NSInteger)segment {
+    NSIndexPath *indexPath = [self.filtersTableView indexPathForCell:cell];
+    
+    switch([indexPath section]) {
+        case 1:
+            searchSettings.radius = segment;
+            break;
+    }
+}
+
+- (void)sortByCell:(SortByCell *)cell didUpdateSegment:(NSInteger)segment {
+    NSIndexPath *indexPath = [self.filtersTableView indexPathForCell:cell];
+    
+    switch([indexPath section]) {
+        case 2:
+            searchSettings.sortMode = segment;
+            break;
     }
 }
 
@@ -87,7 +179,7 @@
 }
 
 - (void)onApplyButton {
-    [self.delegate filtersViewController:self didChangeFilters:self.filters];
+    [self.delegate filtersViewController:self];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

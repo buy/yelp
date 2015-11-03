@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BusinessSearchSettings.h"
+
+extern BusinessSearchSettings *searchSettings;
 
 @interface MainViewController : UIViewController
 

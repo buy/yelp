@@ -14,8 +14,9 @@
     if (self = [super init])  {
         self.term = @"Restaurants";
         self.sortMode = YelpSortModeBestMatched;
-        self.categories = @[];
+        self.categories = [NSMutableArray array];
         self.hasDeal = NO;
+        self.radius = 0;
     }
 
     return self;

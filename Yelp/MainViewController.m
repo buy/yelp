@@ -14,12 +14,14 @@
 
 #import "MBProgressHUD.h"
 
+BusinessSearchSettings *searchSettings;
+
 @interface MainViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, FiltersViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
 @property (strong, nonatomic) NSArray *businesses;
 @property (strong, nonatomic) UISearchBar *searchBar;
-@property (strong, nonatomic) BusinessSearchSettings *searchSettings;
+//@property (strong, nonatomic) BusinessSearchSettings *searchSettings;
 
 @end
 
@@ -41,17 +43,18 @@
 
 - (void) doSearch {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [YelpBusiness searchWithTerm:self.searchSettings.term
-                        sortMode:self.searchSettings.sortMode
-                      categories:self.searchSettings.categories
-                           deals:self.searchSettings.hasDeal
+    [YelpBusiness searchWithTerm:searchSettings.term
+                        sortMode:searchSettings.sortMode
+                      categories:searchSettings.categories
+                           deals:searchSettings.hasDeal
+                          radius:searchSettings.radius
                       completion:^(NSArray *businesses, NSError *error) {
                           if (!error) {
                               for (YelpBusiness *business in businesses) {
                                   NSLog(@"%@", business);
                               }
                               self.businesses = businesses;
-                              self.searchBar.text = self.searchSettings.term;
+                              self.searchBar.text = searchSettings.term;
 
                               [self.mainTableView reloadData];
                           } else {
@@ -80,7 +83,7 @@
 }
 
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    self.searchSettings.term = searchBar.text;
+    searchSettings.term = searchBar.text;
     [searchBar resignFirstResponder];
     [self doSearch];
 }
@@ -108,7 +111,7 @@
 }
 
 - (void)initializeSearchBar {
-    self.searchSettings = [[BusinessSearchSettings alloc] init];
+    searchSettings = [[BusinessSearchSettings alloc] init];
     self.searchBar = [[UISearchBar alloc] init];
     self.searchBar.delegate = self;
     [self.searchBar sizeToFit];
@@ -139,6 +142,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     BusinessCell *cell = [self.mainTableView dequeueReusableCellWithIdentifier:@"BusinessCell"];
+    cell.preservesSuperviewLayoutMargins = false;
+    cell.separatorInset = UIEdgeInsetsZero;
+    cell.layoutMargins = UIEdgeInsetsZero;
+
     YelpBusiness *business = self.businesses[indexPath.row];
     cell.business = business;
     
@@ -146,8 +153,7 @@
 }
 
 #pragma mark - Filter delegate methods
-- (void)filtersViewController:(FiltersViewController *)filtersViewController didChangeFilters:(NSDictionary *)filters {
-    self.searchSettings.term = @"car wash";
+- (void)filtersViewController:(FiltersViewController *)filtersViewController {
     [self doSearch];
 }
 

@@ -13,7 +13,8 @@
 
 @property (nonatomic, strong) NSString *term;
 @property YelpSortMode sortMode;
-@property (nonatomic, strong) NSArray *categories;
+@property (nonatomic, strong) NSMutableArray *categories;
 @property BOOL hasDeal;
+@property NSInteger radius;
 
 @end

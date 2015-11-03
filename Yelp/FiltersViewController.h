@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BusinessSearchSettings.h"
 
 @class FiltersViewController;
 
 @protocol FiltersViewControllerDelegate <NSObject>
 
-- (void)filtersViewController:(FiltersViewController *)filtersViewController didChangeFilters:(NSDictionary *)filters;
+- (void)filtersViewController:(FiltersViewController *)filtersViewController;
 
 @end
 
