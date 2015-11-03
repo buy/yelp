@@ -24,6 +24,8 @@ Time spent: 6 hours
 
 ### Additional:
 - [x] Improved UI
+- [x] Network request loader
+- [x] Network error notification
 - [x] Filter page settings will be stored during the app session, but will be cleared after app restart
 
 ### Video Walkthrough
